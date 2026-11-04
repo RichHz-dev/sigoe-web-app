@@ -28,12 +28,10 @@ export default function Footer() {
       <div className="site-container pt-16 pb-8">
         <div className="grid gap-10 border-b border-white/10 pb-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           <div className="space-y-5 lg:col-span-4">
-            <BrandLogo inverted />
-            {/* <BrandLogo
-              variant="white"
-              imageClassName="h-14 md:h-16"
-            /> */}
-            <p className="max-w-sm text-xs leading-7 text-masterly-sky/80">
+            
+            <BrandLogo variant="white_h" imageClassName="h-16 md:h-20" />
+
+            <p className="max-w-sm text-xs leading-7 text-slate-400">
               Camisería para caballero con una propuesta de elegancia contemporánea y atención a pedidos corporativos desde Gamarra, Lima.
             </p>
             <div className="flex gap-3">

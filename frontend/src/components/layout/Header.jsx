@@ -76,7 +76,7 @@ export default function Header() {
             >
               <Menu size={22} />
             </button>
-            <BrandLogo variant="navy" imageClassName="h-12 md:h-14" />
+            <BrandLogo variant="navy_h" imageClassName="h-16 md:h-20" />
           </div>
 
           <nav

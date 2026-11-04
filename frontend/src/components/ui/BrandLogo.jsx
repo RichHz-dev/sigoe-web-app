@@ -35,7 +35,9 @@ export default function BrandLogo({
   const logos = {
     navy: "/brand/logo-navy.png",
     white: "/brand/logo-white.png",
-    icon: "/brand/isotipo.png",
+    navy_h: "/brand/logo-navy-h.png",
+    white_h: "/brand/logo-white-h.png",
+    // icon: "/brand/isotipo.png",
   };
 
   return (
