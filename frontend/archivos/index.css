@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* MASTERLY — Design System | Tailwind CSS v4 */
+@theme {
+  --color-masterly-darkest: #00072d;
+  --color-masterly-navy: #001c55;
+  --color-masterly-medium: #0a2472;
+  --color-masterly-vibrant: #0e6ba8;
+  --color-masterly-sky: #a6e1fa;
+  --color-masterly-subtle: #f4faff;
+  --color-masterly-border: #d2ebf9;
+  --font-editorial: "Playfair Display", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", Arial, sans-serif;
+}
+
+:root {
+  font-family: var(--font-body);
+  color: var(--color-masterly-navy);
+  background: #fff;
+  font-synthesis: none;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 95px;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button { cursor: pointer; }
+img { display: block; max-width: 100%; }
+::selection { background: var(--color-masterly-vibrant); color: #fff; }
+:focus-visible { outline: 2px solid var(--color-masterly-navy); outline-offset: 3px; }
+
+@layer components {
+  .site-container { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .section-padding { @apply py-16 md:py-20; }
+  .editorial-title { @apply font-editorial font-semibold tracking-tight text-masterly-navy; }
+  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.18em] text-masterly-vibrant; }
+  .icon-button { @apply inline-grid h-10 w-10 place-items-center rounded-sm text-masterly-navy transition-colors hover:bg-masterly-subtle hover:text-masterly-medium; }
+  .btn-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-masterly-navy px-6 py-3 text-[13px] font-semibold text-white transition-colors duration-200 hover:bg-masterly-medium; }
+  .btn-accent { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-masterly-vibrant px-6 py-3 text-[13px] font-semibold text-white transition-colors duration-200 hover:bg-masterly-medium; }
+  .btn-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-masterly-navy bg-white px-6 py-3 text-[13px] font-semibold text-masterly-navy transition-colors duration-200 hover:bg-masterly-subtle; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

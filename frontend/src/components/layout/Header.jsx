@@ -1,8 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react';
+import {
+  Link,
+  NavLink,
+  useNavigate,
+} from 'react-router-dom';
+import {
+  Menu,
+  Search,
+  ShoppingBag,
+  UserRound,
+  X,
+} from 'lucide-react';
 import BrandLogo from '../ui/BrandLogo';
+import SearchPanel from '../search/SearchPanel';
 import { navLinks } from '../../data/store';
 import { useCart } from '../../context/CartContext';
 
@@ -34,33 +45,66 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
+
   const searchInputRef = useRef(null);
+  const searchPanelRef = useRef(null);
+  const searchTriggerRef = useRef(null);
+
   const navigate = useNavigate();
   const { quantity, setIsOpen } = useCart();
 
+  // Escape cierra cualquiera de los dos paneles.
   useEffect(() => {
     if (!menuOpen && !searchOpen) return undefined;
-    const onEscape = (event) => {
+
+    function handleEscape(event) {
       if (event.key === 'Escape') {
         setMenuOpen(false);
         setSearchOpen(false);
       }
-    };
-    document.addEventListener('keydown', onEscape);
-    return () => document.removeEventListener('keydown', onEscape);
+    }
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, [menuOpen, searchOpen]);
 
+  // Abre el buscador con el cursor preparado para escribir.
   useEffect(() => {
     if (searchOpen) searchInputRef.current?.focus();
   }, [searchOpen]);
 
-  const submitSearch = (event) => {
-    event.preventDefault();
-    const term = query.trim();
-    navigate(term ? `/catalogo?q=${encodeURIComponent(term)}` : '/catalogo');
-    setMenuOpen(false);
+  // Cierra la búsqueda al pulsar fuera del panel o de su botón.
+  useEffect(() => {
+    if (!searchOpen) return undefined;
+
+    function handleOutsideClick(event) {
+      const insidePanel = searchPanelRef.current?.contains(event.target);
+      const onTrigger = searchTriggerRef.current?.contains(event.target);
+
+      if (!insidePanel && !onTrigger) {
+        setSearchOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handleOutsideClick);
+    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+  }, [searchOpen]);
+
+  function goToCatalog(term = query) {
+    const trimmed = term.trim();
+    const destination = trimmed
+      ? `/catalogo?q=${encodeURIComponent(trimmed)}`
+      : '/catalogo';
+
     setSearchOpen(false);
-  };
+    setMenuOpen(false);
+    navigate(destination);
+  }
+
+  function submitSearch(event) {
+    event.preventDefault();
+    goToCatalog();
+  }
 
   return (
     <>
@@ -90,8 +134,12 @@ export default function Header() {
 
           <div className="flex items-center gap-1 sm:gap-2">
             <button
+              ref={searchTriggerRef}
               type="button"
-              onClick={() => setSearchOpen((open) => !open)}
+              onClick={() => {
+                setMenuOpen(false);
+                setSearchOpen((open) => !open);
+              }}
               aria-label="Buscar productos"
               aria-expanded={searchOpen}
               aria-controls="masterly-search-panel"
@@ -99,7 +147,11 @@ export default function Header() {
             >
               <Search size={21} strokeWidth={1.7} />
             </button>
-            <Link to="/cuenta" aria-label="Mi cuenta" className="icon-button">
+            <Link
+              to="/cuenta"
+              aria-label="Mi cuenta"
+              className="icon-button"
+            >
               <UserRound size={21} strokeWidth={1.7} />
             </Link>
             <button
@@ -120,38 +172,18 @@ export default function Header() {
 
         {searchOpen && (
           <div
+            ref={searchPanelRef}
             id="masterly-search-panel"
-            className="absolute inset-x-0 top-full border-b border-masterly-border bg-white p-4 shadow-lg"
+            className="absolute left-1/2 top-full z-50 w-[calc(100%-1.5rem)] max-w-[680px] -translate-x-1/2 pt-2 sm:w-[calc(100%-3rem)] sm:pt-3"
           >
-            <form
-              role="search"
+            <SearchPanel
+              query={query}
+              onQueryChange={setQuery}
               onSubmit={submitSearch}
-              className="site-container flex max-w-2xl items-center gap-3"
-            >
-              <Search size={19} className="shrink-0 text-masterly-navy" />
-              <label htmlFor="global-search" className="sr-only">
-                Buscar camisas
-              </label>
-              <input
-                ref={searchInputRef}
-                id="global-search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Buscar camisas, tejidos, estilos..."
-                className="min-w-0 flex-1 border-b border-masterly-border py-3 text-sm outline-none focus:border-masterly-navy"
-              />
-              <button type="submit" className="btn-primary !min-h-9 !px-4">
-                Buscar
-              </button>
-              <button
-                type="button"
-                aria-label="Cerrar búsqueda"
-                onClick={() => setSearchOpen(false)}
-                className="icon-button"
-              >
-                <X size={20} />
-              </button>
-            </form>
+              onSelect={goToCatalog}
+              onClose={() => setSearchOpen(false)}
+              inputRef={searchInputRef}
+            />
           </div>
         )}
       </header>
